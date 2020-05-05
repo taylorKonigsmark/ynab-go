@@ -94,12 +94,12 @@ func (yc Client) newRequest(method string, relUrl string, reqBody interface{}) (
 	resolvedUrl := yc.BaseURL.ResolveReference(rel)
 	if len(endpoint) > 1 {
 		splitQuery := strings.Split(splitUrl[1], "&")
-		toRawQuery := rel.Query()
+		toRawQuery := resolvedUrl.Query()
 		for _, query := range splitQuery {
 			kvQuery := strings.Split(query, "=")
 			toRawQuery.Add(kvQuery[0], kvQuery[1])
 		}
-		rel.RawQuery = toRawQuery.Encode()
+		resolvedUrl.RawQuery = toRawQuery.Encode()
 	}
 	var buf io.ReadWriter
 	if reqBody != nil {
