@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type Client struct {
@@ -87,9 +88,17 @@ func NewClient(baseUrl *url.URL, httpClient *http.Client, accessToken string) *C
 }
 
 func (yc Client) newRequest(method string, relUrl string, reqBody interface{}) (*http.Request, error) {
-	rel := &url.URL{Path: relUrl}
+	splitUrl := strings.Split(relUrl, "?")
+	endpoint := splitUrl[0]
+	rel := &url.URL{Path: endpoint}
 	resolvedUrl := yc.BaseURL.ResolveReference(rel)
-
+	if len(endpoint) > 1 {
+		splitQuery := strings.Split(splitUrl[1], "&")
+		for _, query := range splitQuery {
+			kvQuery := strings.Split(query, "=")
+			rel.Query().Add(kvQuery[0], kvQuery[1])
+		}
+	}
 	var buf io.ReadWriter
 	if reqBody != nil {
 		buf = new(bytes.Buffer)
