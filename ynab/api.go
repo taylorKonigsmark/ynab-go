@@ -92,7 +92,7 @@ func (yc Client) newRequest(method string, relUrl string, reqBody interface{}) (
 	endpoint := splitUrl[0]
 	rel := &url.URL{Path: endpoint}
 	resolvedUrl := yc.BaseURL.ResolveReference(rel)
-	if len(endpoint) > 1 {
+	if len(splitUrl) > 1 {
 		splitQuery := strings.Split(splitUrl[1], "&")
 		toRawQuery := resolvedUrl.Query()
 		for _, query := range splitQuery {
